@@ -2,7 +2,7 @@ import * as cron from 'node-cron';
 import { PrismaClient } from '@prisma/client';
 import { ReportGenerator } from '../reports/generator';
 import { ReportTemplates } from '../reports/templates';
-import { EvolutionApiIntegration } from '../integrations/evolution-api';
+import { EvolutionApiIntegration } from '../integration/evolution-api';
 
 const prisma = new PrismaClient();
 

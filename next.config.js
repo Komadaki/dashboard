@@ -1,11 +1,12 @@
-// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Configurações válidas para Next.js 14+:
   experimental: {
-    // Configurações válidas para Next.js 14
-    serverActions: true,
-    optimizePackageImports: ['@radix-ui/react-icons']
+    serverActions: true,       // Habilitar Server Actions
+    optimizePackageImports: [  // Otimizar imports
+      '@radix-ui/react-icons'
+    ]
   }
 }
 

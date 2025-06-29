@@ -7,7 +7,7 @@ const nextConfig = {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
-        "@": "/home/ubuntu/client-manager/src",
+        "@": "/src",
       };
     }
     return config;

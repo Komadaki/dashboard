@@ -1,19 +1,10 @@
-/** @type {import("next").NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Configurações válidas para Next.js 14
   experimental: {
-    appDir: true,
+    serverActions: true,
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        "@": "/src",
-      };
-    }
-    return config;
-  },
-};
+  reactStrictMode: true,
+}
 
-module.exports = nextConfig;
-
-
+module.exports = nextConfig

@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("cliente") // admin, gestor, cliente
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  clients   Client[] @relation("UserClients")
+  messages  Message[]
+
+  @@map("users")
+}
+
+model Client {
+  id                    String   @id @default(cuid())
+  name                  String
+  email                 String?
+  phone                 String?
+  whatsappNumber        String?
+  metaAdsToken          String?
+  googleAdsToken        String?
+  metaAdsAccountId      String?
+  googleAdsAccountId    String?
+  status                String   @default("ativo") // ativo, inativo, suspenso
+  reportFrequency       String   @default("semanal") // diaria, semanal, mensal
+  reportTime            String   @default("09:00") // horário preferido para envio
+  customFields          Json?    // campos personalizados
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relacionamentos
+  userId                String
+  user                  User       @relation("UserClients", fields: [userId], references: [id], onDelete: Cascade)
+  campaigns             Campaign[]
+  reports               Report[]
+  messages              Message[]
+
+  @@map("clients")
+}
+
+model Campaign {
+  id                String   @id @default(cuid())
+  name              String
+  platform          String   // meta_ads, google_ads
+  campaignId        String   // ID da campanha na plataforma
+  status            String   @default("ativo") // ativo, pausado, finalizado
+  budget            Float?
+  startDate         DateTime?
+  endDate           DateTime?
+  objective         String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relacionamentos
+  clientId          String
+  client            Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  metrics           Metric[]
+
+  @@map("campaigns")
+}
+
+model Metric {
+  id                String   @id @default(cuid())
+  date              DateTime
+  platform          String   // meta_ads, google_ads
+  impressions       Int      @default(0)
+  clicks            Int      @default(0)
+  spend             Float    @default(0)
+  conversions       Int      @default(0)
+  cpc               Float    @default(0)
+  cpm               Float    @default(0)
+  ctr               Float    @default(0)
+  roas              Float    @default(0)
+  costPerConversion Float    @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relacionamentos
+  campaignId        String
+  campaign          Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@map("metrics")
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  title       String
+  period      String   // 7_days, 30_days, current_month, custom
+  startDate   DateTime
+  endDate     DateTime
+  data        Json     // dados do relatório em JSON
+  status      String   @default("gerado") // gerado, enviado, erro
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  clientId    String
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  @@map("reports")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  type        String   // whatsapp, email, sms
+  recipient   String   // número ou email do destinatário
+  content     String   // conteúdo da mensagem
+  template    String?  // template utilizado
+  status      String   @default("pendente") // pendente, enviado, erro, entregue
+  errorMessage String?
+  sentAt      DateTime?
+  deliveredAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  clientId    String?
+  client      Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  reportId    String?
+  report      Report?  @relation(fields: [reportId], references: [id], onDelete: SetNull)
+
+  @@map("messages")
+}
+
+model Integration {
+  id          String   @id @default(cuid())
+  name        String   @unique // meta_ads, google_ads, n8n, evolution_api
+  isActive    Boolean  @default(true)
+  config      Json     // configurações específicas da integração
+  lastSync    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("integrations")
+}
+
+model WebhookLog {
+  id          String   @id @default(cuid())
+  source      String   // n8n, meta_ads, google_ads, evolution_api
+  event       String   // tipo do evento
+  payload     Json     // dados recebidos
+  status      String   @default("processado") // processado, erro, pendente
+  errorMessage String?
+  createdAt   DateTime @default(now())
+
+  @@map("webhook_logs")
+}
+

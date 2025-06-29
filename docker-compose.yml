@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: client-manager-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: client_manager
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - client-manager-network
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: client-manager-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - client-manager-network
+
+  # Main Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: client-manager-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/client_manager
+      - JWT_SECRET=your-super-secure-jwt-secret-with-at-least-32-characters
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=your-super-secure-nextauth-secret
+    depends_on:
+      - db
+      - redis
+    networks:
+      - client-manager-network
+    volumes:
+      - ./uploads:/app/uploads
+
+  # Nginx Reverse Proxy (optional for production)
+  nginx:
+    image: nginx:alpine
+    container_name: client-manager-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    networks:
+      - client-manager-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  client-manager-network:
+    driver: bridge
+

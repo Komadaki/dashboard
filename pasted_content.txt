@@ -1,0 +1,121 @@
+Crie um sistema web 100% open source, customizado, para gerenciamento de clientes de tráfego pago com dashboard exclusivo, integrado a Meta Ads, Google Ads, n8n e Evolution API.
+
+🔧 Tecnologias:
+Frontend: React + Next.js + Tailwind CSS + ShadCN UI
+
+Dashboard: ApexCharts ou Recharts
+
+Backend: Next.js API Routes ou Node.js com Express
+
+Banco de dados: PostgreSQL (preferencial) ou MySQL, usando Prisma ORM
+
+Autenticação: JWT, com roles (admin, gestor, cliente)
+
+Compatível com deploy na Vercel ou Railway
+
+📊 Módulos e funcionalidades:
+🔐 1. Autenticação e controle de acesso
+Login seguro, JWT
+
+Perfis: Admin, Gestor, Cliente
+
+👥 2. Cadastro e gestão de clientes
+CRUD completo de clientes
+
+Armazenar token de acesso à Meta Ads e Google Ads
+
+Campos personalizados: nome, contato, ID das contas, status do cliente, preferências de envio de relatórios
+
+📈 3. Dashboard por cliente
+Visualização exclusiva por cliente:
+
+ROAS, CPC, CPM, CTR, Conversões, Custo por Conversão, Impressões, Cliques
+
+Separação de dados entre Meta Ads e Google Ads
+
+Seção com cards, gráficos, e listagem dos anúncios ativos e pausados
+
+Filtro por período customizável (7 dias, 30 dias, mês atual, etc.)
+
+Permitir visualização por grupo de anúncio ou campanha
+
+🧾 4. Relatórios automatizados por WhatsApp
+Botão "Enviar relatório por WhatsApp" no painel de cada cliente
+
+Integração direta com Evolution API
+
+Template do relatório enviado via WhatsApp:
+
+Nome do cliente
+
+Período do relatório
+
+KPIs principais (ROAS, Conversões, Gasto, etc.)
+
+Link opcional para visualizar no painel
+
+Mensagens registradas no banco com status (enviado/erro/data)
+
+⏱️ 5. Agendamento de envio automático de relatórios
+Cada cliente pode escolher:
+
+Frequência: Diária, Semanal ou Mensal
+
+Horário desejado
+
+Integração com o n8n para executar o envio automático
+
+Interface no admin para configurar essas preferências por cliente
+
+🔌 6. Integração com n8n
+Webhook de entrada para receber dados (Meta Ads e Google Ads)
+
+Webhook de saída para acionar Evolution API ou processos automatizados
+
+JSON formatado com campos padronizados
+
+📤 7. Integração com Evolution API
+Enviar mensagens por template (ex: status da campanha, resumo da semana, alerta de orçamento)
+
+Autenticação por token
+
+Histórico de mensagens enviadas
+
+⚙️ 8. Painel administrativo
+Gerenciar clientes, relatórios, mensagens e configurações
+
+Ver logs de envio de WhatsApp
+
+Alterar permissões e tokens de integração
+
+🎨 Design e layout:
+Visual estilo DashGo
+
+Interface responsiva com dark mode
+
+Sidebar com menu:
+
+Home / Dashboard
+
+Clientes
+
+Relatórios
+
+Configurações
+
+Logs / Mensagens
+
+📂 Entrega:
+Código-fonte 100% open source e limpo
+
+Estrutura de pastas organizada
+
+.env.example configurado
+
+Script SQL com dados dummy (2 clientes com campanhas e relatórios)
+
+README com instruções para rodar localmente e fazer deploy
+
+Documentação básica da API e da integração com Evolution API
+
+Sugestão de automações no n8n (fluxo JSON de exemplo)
